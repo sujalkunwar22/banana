@@ -25,6 +25,9 @@ const publicDir = path.resolve(__dirname, '../public');
 export function createApp() {
   const app = express();
 
+  // Trust reverse proxy (Vercel, AWS, Cloudflare, etc.)
+  app.set('trust proxy', 1);
+
   // Register domain event handlers
   registerDomainEventHandlers();
 

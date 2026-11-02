@@ -38,12 +38,20 @@ class DatabaseAdapter {
     // Default to SQLite
     const dbDir = path.dirname(env.DB_SQLITE_PATH);
     if (!fs.existsSync(dbDir)) {
-      fs.mkdirSync(dbDir, { recursive: true });
+      try {
+        fs.mkdirSync(dbDir, { recursive: true });
+      } catch (err) {
+        logger.warn(`Could not create directory ${dbDir}: ${err.message}`);
+      }
     }
 
     this.sqliteDb = new DatabaseSync(env.DB_SQLITE_PATH);
     this.sqliteDb.exec('PRAGMA foreign_keys = ON;');
-    this.sqliteDb.exec('PRAGMA journal_mode = WAL;');
+    if (process.env.VERCEL) {
+      this.sqliteDb.exec('PRAGMA journal_mode = MEMORY;');
+    } else {
+      this.sqliteDb.exec('PRAGMA journal_mode = WAL;');
+    }
     logger.info(`Connected to SQLite database at: ${env.DB_SQLITE_PATH}`);
     this.isReady = true;
   }

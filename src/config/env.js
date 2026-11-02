@@ -21,7 +21,7 @@ export const env = {
   // Session
   SESSION_SECRET: process.env.SESSION_SECRET || 'banana_brain_development_secret_key_8f3c7b2a9e1d',
   SESSION_NAME: process.env.SESSION_NAME || 'banana_brain_sid',
-  COOKIE_SECURE: process.env.COOKIE_SECURE === 'true',
+  COOKIE_SECURE: process.env.COOKIE_SECURE === 'true' || (process.env.VERCEL ? true : false),
 
   // Banana API
   BANANA_API_BASE_URL: process.env.BANANA_API_BASE_URL || 'https://marcconrad.com/uob/banana/api.php',
@@ -29,7 +29,7 @@ export const env = {
 
   // Database
   DB_DRIVER: (process.env.DB_DRIVER || 'sqlite').toLowerCase(),
-  DB_SQLITE_PATH: path.resolve(rootDir, process.env.DB_SQLITE_PATH || './data/banana_brain.db'),
+  DB_SQLITE_PATH: process.env.DB_SQLITE_PATH || (process.env.VERCEL ? '/tmp/banana_brain.db' : path.resolve(rootDir, './data/banana_brain.db')),
 
   // MySQL (for XAMPP phpMyAdmin)
   DB_MYSQL: {
