@@ -19,13 +19,25 @@ class DatabaseAdapter {
   }
 
   async init() {
+    if (this.isReady) return;
+
     if (this.driver === 'mysql') {
       try {
         logger.info('Connecting to MySQL database...', { host: env.DB_MYSQL.host, port: env.DB_MYSQL.port, db: env.DB_MYSQL.database });
-        this.mysqlPool = mysql.createPool(env.DB_MYSQL);
-        // Test connection
+        this.mysqlPool = mysql.createPool({
+          ...env.DB_MYSQL,
+          timezone: 'Z'
+        });
+
+        this.mysqlPool.on('connection', (conn) => {
+          conn.query("SET time_zone = '+00:00'");
+        });
+
+        // Test connection and configure timezone
         const conn = await this.mysqlPool.getConnection();
+        await conn.query("SET time_zone = '+00:00'");
         conn.release();
+
         logger.info('Connected to MySQL successfully.');
         this.isReady = true;
         return;
@@ -110,9 +122,11 @@ class DatabaseAdapter {
   async close() {
     if (this.mysqlPool) {
       await this.mysqlPool.end();
+      this.mysqlPool = null;
     }
     if (this.sqliteDb) {
       this.sqliteDb.close();
+      this.sqliteDb = null;
     }
     this.isReady = false;
   }

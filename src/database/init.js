@@ -136,7 +136,7 @@ CREATE TABLE IF NOT EXISTS challenges (
   solution INT NOT NULL,
   is_completed TINYINT(1) NOT NULL DEFAULT 0,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  expires_at TIMESTAMP NOT NULL,
+  expires_at DATETIME NOT NULL,
   CONSTRAINT fk_challenges_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
   CONSTRAINT fk_challenges_session FOREIGN KEY (game_session_id) REFERENCES game_sessions (id) ON DELETE SET NULL,
   INDEX idx_challenges_user (user_id),
@@ -179,8 +179,12 @@ export async function initializeDatabase() {
   }
 
   if (db.driver === 'mysql') {
-    // For MySQL, execute statements split by semicolon
-    const statements = sql
+    // For MySQL, strip comment lines and execute statements split by semicolon
+    const cleanSql = sql
+      .split('\n')
+      .filter(line => !line.trim().startsWith('--'))
+      .join('\n');
+    const statements = cleanSql
       .split(';')
       .map(s => s.trim())
       .filter(s => s.length > 0 && !s.toLowerCase().startsWith('create database') && !s.toLowerCase().startsWith('use '));

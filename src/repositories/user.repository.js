@@ -37,16 +37,16 @@ export const userRepository = {
   },
 
   async findByUsername(username) {
-    return db.get(`SELECT * FROM users WHERE username = ? COLLATE NOCASE`, [username]);
+    return db.get(`SELECT * FROM users WHERE LOWER(username) = LOWER(?)`, [username]);
   },
 
   async findByEmail(email) {
-    return db.get(`SELECT * FROM users WHERE email = ? COLLATE NOCASE`, [email]);
+    return db.get(`SELECT * FROM users WHERE LOWER(email) = LOWER(?)`, [email]);
   },
 
   async findByIdentifier(identifier) {
     return db.get(
-      `SELECT * FROM users WHERE username = ? COLLATE NOCASE OR email = ? COLLATE NOCASE`,
+      `SELECT * FROM users WHERE LOWER(username) = LOWER(?) OR LOWER(email) = LOWER(?)`,
       [identifier, identifier]
     );
   },

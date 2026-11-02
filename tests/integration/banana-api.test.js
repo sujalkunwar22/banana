@@ -1,11 +1,16 @@
 /**
  * Banana Brain — Integration Test Suite: Banana API Adapter & Resilience
  */
-import { describe, it } from 'node:test';
+import { describe, it, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { BananaApiService } from '../../src/services/banana-api.service.js';
+import { db } from '../../src/config/database.js';
 
 describe('Banana API Interoperability & Adapter Tests', () => {
+  after(async () => {
+    await db.close();
+  });
+
   it('should fetch a real puzzle from the official Banana API endpoint when online', async () => {
     const service = new BananaApiService('https://marcconrad.com/uob/banana/api.php', 10000);
     try {

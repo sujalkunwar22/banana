@@ -59,11 +59,17 @@ async function setupMySQL() {
     const schemaPath = path.join(rootDir, 'src/database/schema-mysql.sql');
     const sqlScript = fs.readFileSync(schemaPath, 'utf8');
 
+    // Strip comments first
+    const cleanSql = sqlScript
+      .split('\n')
+      .filter(line => !line.trim().startsWith('--'))
+      .join('\n');
+
     // Split and execute statements
-    const statements = sqlScript
+    const statements = cleanSql
       .split(';')
       .map(s => s.trim())
-      .filter(s => s.length > 0 && !s.startsWith('--') && !s.toLowerCase().startsWith('create database') && !s.toLowerCase().startsWith('use '));
+      .filter(s => s.length > 0 && !s.toLowerCase().startsWith('create database') && !s.toLowerCase().startsWith('use '));
 
     for (const stmt of statements) {
       await connection.query(stmt);

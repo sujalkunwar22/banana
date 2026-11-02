@@ -45,8 +45,8 @@ export const challengeRepository = {
     return {
       id: challenge.id,
       imageUrl: challenge.image_url,
-      expiresAt: challenge.expires_at,
-      createdAt: challenge.created_at
+      expiresAt: challenge.expires_at instanceof Date ? challenge.expires_at.toISOString() : challenge.expires_at,
+      createdAt: challenge.created_at instanceof Date ? challenge.created_at.toISOString() : challenge.created_at
     };
   }
 };
