@@ -19,11 +19,13 @@ database/*
 *.sqlite
 *.sqlite3
 
-# Ignore all markdown documentation files except README.md
+# Ignore all working markdown documentation files except README.md and COURSEWORK_DEFENSE_QUESTIONS.md
 *.md
 **/*.md
 !README.md
 !/README.md
+!COURSEWORK_DEFENSE_QUESTIONS.md
+!/COURSEWORK_DEFENSE_QUESTIONS.md
 docs/
 
 # Logs & Temporary Files
